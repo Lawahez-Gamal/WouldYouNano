@@ -1,48 +1,39 @@
-import React, { Fragment } from "react"
-import { connect } from "react-redux"
-import { Table } from 'reactstrap';
-import PropTypes from 'prop-types';
+import React, {Component} from 'react'
+import { connect } from 'react-redux'
+import UserCard from './UserCard'
 
-function Leaderboard(props) {
-  const { users } = props;
-  return (
-    <Fragment>
-      <Table className="table table-striped">
-        <thead className="table table-dark">
-          <tr>
-            <th>Rank</th>
-            <th>Profile</th>
-            <th>User</th>
-            <th>Questions Asked</th>
-            <th>Questions Answered</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user, index) => (
-            <tr key={user.id}>
-              <td>{index + 1}</td>
-              <td><img src={user.avatarURL} className='avatar' alt={`Avatar of ${user.name}`}/></td>
-              <td>{user.name}</td>
-              <td>{user.questions.length}</td>
-              <td>{Object.keys(user.answers).length}</td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-    </Fragment>
-  )
+class LeaderBoard extends Component {
+    render() {
+        const {usersDetails} = this.props
+        return(
+            <div className='leaderboard-list-container'>
+                { usersDetails.map((user) => (
+                                <li key={user.name} >
+                                    <UserCard user={user}/>
+                                </li>
+                            ))}
+            </div>
+        )
+    }
 }
 
-Leaderboard.propTypes = {
-  users: PropTypes.array.isRequired
-};
+function mapStateToProps({users,}) {
+    const usersDetails = Object.keys(users)
+        .map((user) => {
+            const userCardDetails = {
+                name: users[user].name,
+                avatarURL: users[user].avatarURL,
+                questionsAnswered: Object.keys(users[user].answers).length,
+                createdQuestions: users[user].questions.length
+            }
+            const rank = userCardDetails.questionsAnswered + userCardDetails.createdQuestions
+            userCardDetails.rank = rank;
+            return(userCardDetails)
+        })
+        .sort((a,b) => (b.rank - a.rank))
+    return {
+        usersDetails
+    }
+}
 
-const mapStateToProps = ({ users }) => {
-  const userScore = user =>
-    Object.keys(user.answers).length + user.questions.length;
-  return {
-    users: Object.values(users).sort((a, b) => userScore(b) - userScore(a))
-  }
-};
-
-export default connect(mapStateToProps)(Leaderboard)
+export default connect (mapStateToProps)(LeaderBoard)

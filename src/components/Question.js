@@ -1,43 +1,52 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { Card, CardBody, CardTitle } from 'reactstrap';
-import {  withRouter } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { Card, CardContent, Image, Button } from 'semantic-ui-react'
+import { Link, withRouter } from 'react-router-dom'
 
-class Question extends React.Component {
-  constuctor() {
-    this.loadQuestionDetails = this.routeChange.bind(this);
-  }
-  loadQuestionDetails(e, questionId) {
-    let path = `/questions/`+questionId;
-    this.props.history.push(path);
-  }
-  render() {
-    const {question, auth} = this.props;
-    return (
-      <Card onClick={(e) => this.loadQuestionDetails(e, question.id)}>
-        <CardBody>
-          <CardTitle>Would You Rather</CardTitle>
-          <ul>
-            <li className={question.optionOne.votes.includes(auth) ? "optionSelected" : ""}>{question.optionOne.text}</li>
-            <li className={question.optionTwo.votes.includes(auth) ? "optionSelected" : ""}>{question.optionTwo.text}</li>
-          </ul>
-        </CardBody>
-      </Card>
-    );
-  }
+class Question extends Component {
+    handleViewPoll = (e) => {
+        e.preventDefault()
+        const {id,history} = this.props
+        history.push({
+            pathname: `/questions/${id}`,
+            state:{id:id}
+        })
+    }
+
+    render() {
+        const {question,user,id} = this.props
+        const questionHeader = user.name
+        const questionDescription = question.optionOne.text.substring(0,15)
+        return (
+            <Link to={`/questions/${id}`}>
+            <div className='dashboard-list-container'>
+                <Card fluid raised {...{className: 'question-list-card'}}>
+                    <Card.Content style={{background:"#f1f1f1",height:40 }}>
+                        <Card.Header>{questionHeader} says:</Card.Header>
+                    </Card.Content>
+                    <CardContent style={{height:110}}>
+                        <Image src={user.avatarURL} size ='tiny' circular verticalAlign='middle' spaced='left'/>
+                        <div className='verticle-divider'></div>
+                        <div className='dashboard-list-question-info description'>
+                        <Card.Header className='ui header'>Would you rather</Card.Header>
+                        <Card.Description style={{marginBottom:8}}>.... {questionDescription} ....</Card.Description>
+                        <Button fluid basic color='teal' style={{height:30,fontSize:12}} onClick={this.handleViewPoll}>View Poll</Button>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+            </Link>
+        )
+    }
 }
 
-Question.propTypes = {
-  question: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired
-};
-
-function mapStateToProps (state, { id }) {
-  return {
-    question : state.questions[id],
-    auth: state.authUser
-  }
+function mapStateToProps({questions, users}, {id}) {
+    const question = questions[id]
+    const user = users[question.author]
+    return {
+        question,
+        user
+    }
 }
 
-export default withRouter(connect(mapStateToProps, null)(Question))
+export default withRouter(connect(mapStateToProps)(Question))

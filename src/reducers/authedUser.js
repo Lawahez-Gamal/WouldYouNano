@@ -1,4 +1,4 @@
-import { LOG_OUT, SET_AUTHED_USER } from '../actions/authUser'
+import { LOG_OUT, SET_AUTHED_USER } from '../actions/authedUser'
 
 export default function authUser(state = null, action) {
     switch (action.type) {

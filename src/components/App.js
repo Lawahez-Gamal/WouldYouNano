@@ -1,50 +1,63 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component, Fragment } from 'react';
+import { BrowserRouter as Router, Route, Switch} from 'react-router-dom'
+import LoadingBar from 'react-redux-loading'
+import Navbar from './Navbar'
+import Login from './Login'
+import Dashboard from './Dashboard'
+import NewQuestion from './NewQuestion'
+import LeaderBoard from './LeaderBoard'
+import QuestionDetails from './QuestionDetails'
+import Notfound from './Notfound'
+import Routers from './Routers'
 import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
-import { BrowserRouter as Router } from 'react-router-dom';
-
-import { handleInitialData }  from '../actions/shared'
-import Routes from './Routes'
-import NavBar from './NavBar';
+import { handleInitialData } from '../actions/shared';
 
 class App extends Component {
-  componentDidMount(){
-    this.props.handleInitialData()
+  componentDidMount() {
+    const { dispatch, loading } = this.props
+    if(loading === true) {
+      dispatch(handleInitialData())
+   }
   }
   render() {
-    const { notLoggedIn } = this.props;
-
     return (
-      <Router>
-        <Fragment>
-          <div className="main-container">
-            <NavBar/>
-            <Routes notLoggedIn={notLoggedIn}/>
+    <Router>
+      <Fragment>
+          <Navbar/>
+          <div>
+            <LoadingBar/>
+            { this.props.loading === true
+              ? null
+              : <div>
+              <Switch>
+                <Route path='/login' exact component={Login} />
+                <Routers path='/' exact component={Dashboard} />
+                <Routers path='/add' exact component={NewQuestion} />
+                <Routers path='/questions/:question_id' exact component={QuestionDetails} />
+                <Routers path='/leaderboard' exact component={LeaderBoard} />
+                <Route component={Notfound}/>
+              </Switch>
+            </div>
+              }
           </div>
-        </Fragment>
-      </Router>
-    );
+      </Fragment>
+    </Router>
+    )
   }
 }
 
-App.propTypes = {
-  handleInitialData : PropTypes.func.isRequired,
-  notLoggedIn: PropTypes.bool.isRequired
-};
-
-function mapStateToProps ({ authUser }) {
+function mapStateToProps({users}) {
   return {
-    notLoggedIn: authUser === null
+    loading: isEmpty(users)
   }
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    handleInitialData: () => {
-      dispatch(handleInitialData())
-    }
+function isEmpty(obj) {
+  for(var key in obj) {
+      if(obj.hasOwnProperty(key))
+          return false
   }
+  return true
 }
 
-
-export default connect(mapStateToProps, mapDispatchToProps)(App)
+export default connect(mapStateToProps)(App)

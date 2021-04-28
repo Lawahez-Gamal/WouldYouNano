@@ -1,24 +1,19 @@
-import React from "react"
-import PropTypes from "prop-types"
-import {Button, Card, CardBody, CardHeader} from 'reactstrap';
-import CardTitle from "reactstrap/es/CardTitle";
+import React from 'react'
 
-const NotFound = ({ history }) => (
-  <Card>
-    <CardHeader>404</CardHeader>
-    <CardBody>
-      <CardTitle>Page Not Found</CardTitle>
-      <Button size="small" color="primary" onClick={() => history.push("/")}>
-        Go Home
-      </Button>
-    </CardBody>
-  </Card>
-);
-
-NotFound.propTypes = {
-  history: PropTypes.shape({
-    push: PropTypes.func.isRequired
-  }).isRequired
-};
-
-export default NotFound
+const Notfound = () => {
+    return(
+        <div>
+            <div className='page-404' style={{textAlign:'center'}}>
+                <p>404</p>
+                <h3 style={{fontSize:30,marginBottom:'20px',fontWeight:400}}>Sorry.</h3>
+                <small style={{fontSize:16,fontWeight:200,lineHeight:'30px'}}>
+                    Sorry, the page or question you're looking for doesn't exist.
+                    <br/>
+                    Go back to <a href='/'>Home</a> and have fun voting more questions ?  :)
+                    <br/>
+                </small>
+            </div>
+        </div>
+    )
+}
+export default Notfound

@@ -1,20 +1,20 @@
-let users = {
-  sarahedo: {
-    id: 'sarahedo',
-    name: 'Sarah Edo',
-    avatarURL: "https://ui-avatars.com/api/?name=SarahEdo&background=random",
+ export let users = {
+  tylermcginnis: {
+    id: 'tylermcginnis',
+    name: 'tylermcginnis',
+    avatarURL: ("https://ui-avatars.com/api/?name=TylerMcginnis&background=random"),
     answers: {
       "8xf0y6ziyjabvozdd253nd": 'optionOne',
-      "6ni6ok3ym7mf1p33lnez": 'optionTwo',
+      "6ni6ok3ym7mf1p33lnez": 'optionOne',
       "am8ehyc8byjqgar0jgpub9": 'optionTwo',
       "loxhs1bqm25b708cmbf3g": 'optionTwo'
     },
     questions: ['8xf0y6ziyjabvozdd253nd', 'am8ehyc8byjqgar0jgpub9']
   },
-  tylermcginnis: {
-    id: 'tylermcginnis',
-    name: 'Tyler McGinnis',
-    avatarURL: "https://ui-avatars.com/api/?name=TylerMcginnis&background=random",
+  sarahedo: {
+    id: 'sarahedo',
+    name: 'sarahedo',
+    avatarURL: ("https://ui-avatars.com/api/?name=SarahEdo&background=random"),
     answers: {
       "vthrdm985a262al8qx3do": 'optionOne',
       "xj352vofupe1dqz9emx13r": 'optionTwo',
@@ -23,12 +23,12 @@ let users = {
   },
   johndoe: {
     id: 'johndoe',
-    name: 'John Doe',
-    avatarURL: "https://ui-avatars.com/api/?name=John+Doe&background=random",
+    name: 'johndoe',
+    avatarURL: ("https://ui-avatars.com/api/?name=John+Doe&background=random"),
     answers: {
       "xj352vofupe1dqz9emx13r": 'optionOne',
       "vthrdm985a262al8qx3do": 'optionTwo',
-      "6ni6ok3ym7mf1p33lnez": 'optionTwo'
+      "6ni6ok3ym7mf1p33lnez": 'optionOne'
     },
     questions: ['6ni6ok3ym7mf1p33lnez', 'xj352vofupe1dqz9emx13r'],
   }
@@ -37,15 +37,15 @@ let users = {
 let questions = {
   "8xf0y6ziyjabvozdd253nd": {
     id: '8xf0y6ziyjabvozdd253nd',
-    author: 'sarahedo',
+    author: 'tylermcginnis',
     timestamp: 1467166872634,
     optionOne: {
-      votes: ['sarahedo'],
-      text: 'Know more about marine animals',
+      votes: ['tylermcginnis'],
+      text: 'have horrible short term memory',
     },
     optionTwo: {
       votes: [],
-      text: 'Know more about animals'
+      text: 'have horrible long term memory'
     }
   },
   "6ni6ok3ym7mf1p33lnez": {
@@ -54,50 +54,50 @@ let questions = {
     timestamp: 1468479767190,
     optionOne: {
       votes: [],
-      text: 'Become a super hero',
+      text: 'become a superhero',
     },
     optionTwo: {
-      votes: ['johndoe', 'sarahedo'],
-      text: 'become a super villain'
+      votes: ['johndoe', 'tylermcginnis'],
+      text: 'become a supervillian'
     }
   },
   "am8ehyc8byjqgar0jgpub9": {
     id: 'am8ehyc8byjqgar0jgpub9',
-    author: 'sarahedo',
+    author: 'tylermcginnis',
     timestamp: 1488579767190,
     optionOne: {
       votes: [],
-      text: 'Be fashion designer',
+      text: 'be telekinetic',
     },
     optionTwo: {
       votes: ['sarahedo'],
-      text: 'Be influncer'
+      text: 'be telepathic'
     }
   },
   "loxhs1bqm25b708cmbf3g": {
     id: 'loxhs1bqm25b708cmbf3g',
-    author: 'tylermcginnis',
+    author: 'sarahedo',
     timestamp: 1482579767190,
     optionOne: {
       votes: [],
-      text: 'Be a front-end developer',
+      text: 'be a front-end developer',
     },
     optionTwo: {
-      votes: ['sarahedo'],
-      text: 'Be a fullstack developer'
+      votes: ['johndoe'],
+      text: 'be a back-end developer'
     }
   },
   "vthrdm985a262al8qx3do": {
     id: 'vthrdm985a262al8qx3do',
-    author: 'tylermcginnis',
+    author: 'sarahedo',
     timestamp: 1489579767190,
     optionOne: {
-      votes: ['tylermcginnis'],
-      text: 'Have a home on Mars',
+      votes: ['sarahedo'],
+      text: 'find $50 yourself',
     },
     optionTwo: {
       votes: ['johndoe'],
-      text: 'Have a journey around the world'
+      text: 'have your best friend find $500'
     }
   },
   "xj352vofupe1dqz9emx13r": {
@@ -106,11 +106,11 @@ let questions = {
     timestamp: 1493579767190,
     optionOne: {
       votes: ['johndoe'],
-      text: 'write Java',
+      text: 'write JavaScript',
     },
     optionTwo: {
       votes: ['tylermcginnis'],
-      text: 'write PHP'
+      text: 'write Swift'
     }
   },
 }
@@ -131,6 +131,16 @@ export function _getQuestions () {
   })
 }
 
+export function getInitialData() {
+  return Promise.all([
+    _getUsers(),
+    _getQuestions(),
+  ]).then(([users, questions]) => ({
+    users,
+    questions,
+  }));
+}
+
 function formatQuestion ({ optionOneText, optionTwoText, author }) {
   return {
     id: generateUID(),
@@ -149,7 +159,7 @@ function formatQuestion ({ optionOneText, optionTwoText, author }) {
 
 export function _saveQuestion (question) {
   return new Promise((res, rej) => {
-    const authUser = question.author;
+    const authedUser = question.author;
     const formattedQuestion = formatQuestion(question);
 
     setTimeout(() => {
@@ -157,12 +167,12 @@ export function _saveQuestion (question) {
         ...questions,
         [formattedQuestion.id]: formattedQuestion
       }
-      
+
       users = {
         ...users,
-        [authUser]: {
-          ...users[authUser],
-          questions: users[authUser].questions.concat([formattedQuestion.id])
+        [authedUser]: {
+          ...users[authedUser],
+          questions: users[authedUser].questions.concat([formattedQuestion.id])
         }
       }
 
@@ -171,27 +181,27 @@ export function _saveQuestion (question) {
   })
 }
 
-export function _saveQuestionAnswer ({ authUser, questid, answer }) {
+export function _saveQuestionAnswer ({ authedUser, qid, answer }) {
   return new Promise((res, rej) => {
     setTimeout(() => {
       users = {
         ...users,
-        [authUser]: {
-          ...users[authUser],
+        [authedUser]: {
+          ...users[authedUser],
           answers: {
-            ...users[authUser].answers,
-            [questid]: answer
+            ...users[authedUser].answers,
+            [qid]: answer
           }
         }
       }
 
       questions = {
         ...questions,
-        [questid]: {
-          ...questions[questid],
+        [qid]: {
+          ...questions[qid],
           [answer]: {
-            ...questions[questid][answer],
-            votes: questions[questid][answer].votes.concat([authUser])
+            ...questions[qid][answer],
+            votes: questions[qid][answer].votes.concat([authedUser])
           }
         }
       }
