@@ -48,7 +48,7 @@ class Navbar extends Component {
                             Hello, {user.name}
                         </Menu.Item>
                         <Image style={{marginTop:'0.35em'}} avatar src={user!== 'undefined' ? user.avatarURL : "No-image"}/>
-                        <Menu.Item as={NavLink} name='logOut' exact to='/login' color='teal' onClick={this.handleLogout}>
+                        <Menu.Item as={NavLink} name='logOut' exact to='/login' color='violet' onClick={this.handleLogout}>
                             Log Out
                         </Menu.Item>
                    </Menu.Menu>: <div></div>}
